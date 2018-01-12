@@ -1,0 +1,58 @@
+The folder contains 2 .py files namely client.py and server.py. 
+These are python 3.5 version files.
+Along with this, the folder also contains a text file, a picture and a .docx file.
+
+
+The server has to be run first with a port number as the argument.
+The port number should be over 5000 or the server wont run.
+Next, the client has to be run with a client ip(preferably loopback address) and the same port as server's.
+
+Client:The client will be prompting you for an input till the input is exit. If the input is exit, it closes both the server and the client.
+There will be 5 choices of which you can choose to do. All five call a function in the class.
+Server: Similar to the client, the server takes the input sent by the client and calls a function depending on the input given.
+
+The 5 operations are as follows:
+
+
+1. Put [filename]: This will check if the filename given is present in the client directory. If its present, sends it to the server to store it in the server directory.
+If the file is not present, prints and error and promts you again for a command. The filename and the function put must be separated by a space. The following is the order of how things happen:
+
+->The client reads the input given by the user, checks if the file is present, calls the put function and sends it to the server.
+->The server recieves the messages and calls the function. The server creats a new file or opens an existing file.
+->The client opens the file and reads 2048 bytes at once and sends it to the server.
+->Server recieves it and sends an Acknowledgement.
+->If the acknowledgement is not recieved by the client or if the file is dropped in between, the client sends the same packet again until the acknowledgement is recieved.
+->After all the data has been sent, a packet with "qazwsxed" as data is sent which is recognized by the server as the EOF.
+->Both the client and the server close the file after the transfer is complete and the client prompts for the next command.
+->The file transfer is done in the bytes format.
+
+2. Get [filename]: This will check the server filesystem for the filename. If the file is present, it will copy the file to the client directory as recieved_filename.
+If the file is not present, it will print, no such file and prompt for the next command.
+
+->The client reads the user input and sends the input to the server.
+->The server checks if the file is present in its directory and sends a "message" found or "not found"
+->If the message is found, the client gets ready to recieve and names the new recieving file as recieved_filename.
+->Th server in the mean time opens the file and starts sending the file in parts.
+->If the message is not recieved/dropped or if the ack is not recieved/dropped, the server sends the same message again till acknowledgment.
+->Similar to the out function, the process termiantes with a packet of "qazwsxed" as data.
+->Both the server and client close the file at this point.
+->The file transfer is done in the bytes format.
+
+3. Rename [old filename] [new filename]: Similar to above, this checks if the file is present in the server and changes its name if the file is there else it prints a message wrong input and prompts again.
+This changes the filename in the server.
+
+->The user input is read.
+->Forwarded to the server where the 3 fields are separated.
+->The rename is tried or a message "Wrong Input" is sent.
+->Using os library, the required file is renamed and a message saying "Done!" is sent.
+
+4. List: This lists all the files present in the server.
+->The user input is read and sent to the server by the client.
+->The server separates the .py files from others and sends the other files.
+->These are recieved and acknowledged by the client.
+->If the ack is not recieved at the server, it sends the same filename again.
+->This redundency ensures no packet is lost.
+
+5. Exit: This will close the server followed by the client.
+->The input is read and sent to the server. The server acknowledges it and closes.
+->The client then closes.
